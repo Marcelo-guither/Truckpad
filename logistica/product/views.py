@@ -20,16 +20,18 @@ class ProductView(MethodView):
             res = {}
             for product in products:
                 res[product.id] = {
-                    'name': product.name,
-                    'price': str(product.price),
+                    'nome': product.nome,
+                    'sexo': product.sexo,
+                    'tipoVeiculo': product.tipoVeiculo,
                 }
         else:
             product = User.query.filter_by(id=id).first()
             if not product:
                 abort(404)
             res = {
-                'name': product.name,
-                'price': str(product.price),
+                'name': product.nome,
+                'price': product.sexo,
+                'tipoVeiculo': product.tipoVeiculo,
             }
         return jsonify(res)
 
