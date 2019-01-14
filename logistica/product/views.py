@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint, abort
 from flask.views import MethodView
 from logistica import db, app
-from logistica.product.models import User
+from logistica.product.models import Product
 
 catalog = Blueprint('product', __name__)
 
@@ -16,7 +16,7 @@ class ProductView(MethodView):
 
     def get(self, id=None, page=1):
         if not id:
-            products = User.query.paginate(page, 10).items
+            products = Product.query.paginate(page, 10).items
             res = {}
             for product in products:
                 res[product.id] = {
@@ -25,7 +25,7 @@ class ProductView(MethodView):
                     'tipoVeiculo': product.tipoVeiculo,
                 }
         else:
-            product = User.query.filter_by(id=id).first()
+            product = Product.query.filter_by(id=id).first()
             if not product:
                 abort(404)
             res = {
@@ -36,25 +36,25 @@ class ProductView(MethodView):
         return jsonify(res)
 
     def post(self):
-        nome = request.form.get('nome')
-        sexo = request.form.get('sexo')
-        tipoVeiculo = request.form.get('tipoVeiculo')
-        # veiculoCarregado = request.form.get('veiculoCarregado')
-        # idade = request.form.get('idade')
-        # cnh = request.form.get('cnh')
-        # possuiVeiculo = request.form.get('possuiVeiculo')
+        nome = request.get_json().get('nome')
+        sexo = request.get_json().get('sexo')
+        tipoVeiculo = request.get_json().get('tipoVeiculo')
+        veiculoCarregado = request.get_json().get('veiculoCarregado')
+        idade = request.get_json().get('idade')
+        cnh = request.get_json().get('cnh')
+        possuiVeiculo = request.get_json().get('possuiVeiculo')
 
-        product = User(nome, sexo, tipoVeiculo)
+        product = Product(nome, sexo, tipoVeiculo, veiculoCarregado, idade, cnh, possuiVeiculo)
         db.session.add(product)
         db.session.commit()
         return jsonify({product.id: {
             'nome': product.nome,
             'sexo': product.sexo,
             'tipoVeiculo': product.tipoVeiculo,
-            # 'veiculoCarregado': product.veiculoCarregado,
-            # 'idade': product.idade,
-            # 'cnh': product.cnh,
-            # 'possuiVeiculo': product.possuiVeiculo,
+            'veiculoCarregado': product.veiculoCarregado,
+            'idade': product.idade,
+            'cnh': product.cnh,
+            'possuiVeiculo': product.possuiVeiculo,
         }})
 
     def put(self, id):
