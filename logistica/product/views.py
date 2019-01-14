@@ -23,6 +23,10 @@ class ProductView(MethodView):
                     'nome': product.nome,
                     'sexo': product.sexo,
                     'tipoVeiculo': product.tipoVeiculo,
+                    'veiculoCarregado': product.veiculoCarregado,
+                    'idade': product.idade,
+                    'cnh': product.cnh,
+                    'possuiVeiculo': product.possuiVeiculo,
                 }
         else:
             product = Product.query.filter_by(id=id).first()
@@ -32,6 +36,10 @@ class ProductView(MethodView):
                 'name': product.nome,
                 'price': product.sexo,
                 'tipoVeiculo': product.tipoVeiculo,
+                'veiculoCarregado': product.veiculoCarregado,
+                'idade': product.idade,
+                'cnh': product.cnh,
+                'possuiVeiculo': product.possuiVeiculo,
             }
         return jsonify(res)
 
@@ -69,8 +77,8 @@ class ProductView(MethodView):
 
 product_view = ProductView.as_view('product_view')
 app.add_url_rule(
-    '/product/', view_func=product_view, methods=['GET', 'POST']
+    '/user/', view_func=product_view, methods=['GET', 'POST']
 )
 app.add_url_rule(
-    '/product/<int:id>', view_func=product_view, methods=['GET']
+    '/user/<int:id>', view_func=product_view, methods=['GET']
 )
