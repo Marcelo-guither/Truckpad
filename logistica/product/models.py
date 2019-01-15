@@ -1,6 +1,6 @@
 from logistica import db
 
-class Product(db.Model):
+class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(255))
