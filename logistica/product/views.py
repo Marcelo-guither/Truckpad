@@ -3,15 +3,12 @@ from flask.views import MethodView
 from logistica import db, app
 from logistica.product.models import User
 
-
 catalog = Blueprint('product', __name__)
-
 
 @catalog.route('/')
 @catalog.route('/home')
 def home():
     return "Bem vindo aa API do truckpad"
-
 
 class ProductView(MethodView):
 
