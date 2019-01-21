@@ -77,28 +77,12 @@ class ProductView(MethodView):
         user = User.query.get(id)
 
         if user is not None:
-            user.nome = request.get_json().get('nome')
-            user.sexo = request.get_json().get('sexo')
-            user.tipoVeiculo = request.get_json().get('tipoVeiculo')
-            user.veiculoCarregado = request.get_json().get('veiculoCarregado')
-            user.idade = request.get_json().get('idade')
-            user.cnh = request.get_json().get('cnh')
-            user.possuiVeiculo = request.get_json().get('possuiVeiculo')
-            user.cepOrigem = request.get_json().get('cepOrigem')
-            user.cepDestino = request.get_json().get('cepDestino')
+            for key in request.get_json().keys():
+                if request.get_json()[key] is not None:
+                    setattr(user, key, request.get_json()[key])
 
             db.session.commit()
-            return jsonify({user.id: {
-                'nome': user.nome,
-                'sexo': user.sexo,
-                'tipoVeiculo': user.tipoVeiculo,
-                'veiculoCarregado': user.veiculoCarregado,
-                'idade': user.idade,
-                'cnh': user.cnh,
-                'possuiVeiculo': user.possuiVeiculo,
-                'cepOrigem': user.cepOrigem,
-                'cepDestino': user.cepDestino
-            }})
+            return "Usuário atualizado com sucesso!"
         return ""
 
     def delete(self, id):
