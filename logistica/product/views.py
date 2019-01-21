@@ -35,7 +35,7 @@ class ProductView(MethodView):
             'cnh': user.cnh,
             'possuiVeiculo': user.possuiVeiculo,
             'cepOrigem': user.cepOrigem,
-            'cepDestino': user.cepDestino,
+            'cepDestino': user.cepDestino
         }})
 
     def get(self, id=None, page=1):
@@ -52,7 +52,7 @@ class ProductView(MethodView):
                     'cnh': product.cnh,
                     'possuiVeiculo': product.possuiVeiculo,
                     'cepOrigem': product.cepOrigem,
-                    'cepDestino': product.cepDestino,
+                    'cepDestino': product.cepDestino
                 }
         else:
             product = User.query.filter_by(id=id).first()
@@ -67,34 +67,39 @@ class ProductView(MethodView):
                 'cnh': product.cnh,
                 'possuiVeiculo': product.possuiVeiculo,
                 'cepOrigem': product.cepOrigem,
-                'cepDestino': product.cepDestino,
+                'cepDestino': product.cepDestino
             }
         return jsonify(res)
 
-    # def put(self, id):
-    #     # Update the record for the provided id
-    #     # with the details provided.
-    #     user = User.query.filter_by(id=id).first()
-    #     if user is not None:
-    #         parser = reqparse.RequestParser()
-    #         parser.add_argument('rate', type=int, help='Rate to charge for this resource')
-    #         args = self.parser.parse_args(strict=True)
-    #         for key, value in args.items():
-    #             if args[key] is not None:
-    #                 setattr(user, key, value)
-    #         db.session.commit()
-    #         return jsonify({user.id: {
-    #             'nome': user.nome,
-    #             'sexo': user.sexo,
-    #             'tipoVeiculo': user.tipoVeiculo,
-    #             'veiculoCarregado': user.veiculoCarregado,
-    #             'idade': user.idade,
-    #             'cnh': user.cnh,
-    #             'possuiVeiculo': user.possuiVeiculo,
-    #             'cepOrigem': user.cepOrigem,
-    #             'cepDestino': user.cepDestino,
-    #         }})
-    #     return ""
+    def put(self, id):
+        # Update the record for the provided id
+        # with the details provided.
+        user = User.query.get(id)
+
+        if user is not None:
+            user.nome = request.get_json().get('nome')
+            user.sexo = request.get_json().get('sexo')
+            user.tipoVeiculo = request.get_json().get('tipoVeiculo')
+            user.veiculoCarregado = request.get_json().get('veiculoCarregado')
+            user.idade = request.get_json().get('idade')
+            user.cnh = request.get_json().get('cnh')
+            user.possuiVeiculo = request.get_json().get('possuiVeiculo')
+            user.cepOrigem = request.get_json().get('cepOrigem')
+            user.cepDestino = request.get_json().get('cepDestino')
+
+            db.session.commit()
+            return jsonify({user.id: {
+                'nome': user.nome,
+                'sexo': user.sexo,
+                'tipoVeiculo': user.tipoVeiculo,
+                'veiculoCarregado': user.veiculoCarregado,
+                'idade': user.idade,
+                'cnh': user.cnh,
+                'possuiVeiculo': user.possuiVeiculo,
+                'cepOrigem': user.cepOrigem,
+                'cepDestino': user.cepDestino
+            }})
+        return ""
 
     def delete(self, id):
         # Delete the record for the provided id.
@@ -118,7 +123,7 @@ class ProductView(MethodView):
                 'cnh': product.cnh,
                 'possuiVeiculo': product.possuiVeiculo,
                 'cepOrigem': product.cepOrigem,
-                'cepDestino': product.cepDestino,
+                'cepDestino': product.cepDestino
             }
         return jsonify(res)
 
@@ -137,9 +142,34 @@ class ProductView(MethodView):
                     'cnh': product.cnh,
                     'possuiVeiculo': product.possuiVeiculo,
                     'cepOrigem': product.cepOrigem,
-                    'cepDestino': product.cepDestino,
+                    'cepDestino': product.cepDestino
                 }
         return jsonify(len(res))
+
+    @app.route('/list-type', methods=['GET'])
+    def listType(page=1):
+        products = User.query.paginate(page, 10).items
+        res = {}
+        for product in products:
+            tipo = 'não preenchido'
+            if(product.tipoVeiculo is not None):
+                tipo = product.tipoVeiculo
+
+            if (tipo not in res):
+                res[tipo] = []
+
+            res[tipo].append({
+                'nome': product.nome,
+                'sexo': product.sexo,
+                'tipoVeiculo': product.tipoVeiculo,
+                'veiculoCarregado': product.veiculoCarregado,
+                'idade': product.idade,
+                'cnh': product.cnh,
+                'possuiVeiculo': product.possuiVeiculo,
+                'cepOrigem': product.cepOrigem,
+                'cepDestino': product.cepDestino
+            })
+        return jsonify(res)
 
 product_view = ProductView.as_view('product_view')
 app.add_url_rule(
