@@ -72,8 +72,6 @@ class ProductView(MethodView):
         return jsonify(res)
 
     def put(self, id):
-        # Update the record for the provided id
-        # with the details provided.
         user = User.query.get(id)
 
         if user is not None:
@@ -83,7 +81,7 @@ class ProductView(MethodView):
 
             db.session.commit()
             return "Usuário atualizado com sucesso!"
-        return ""
+        return "Id do usuário não encontrado."
 
     def delete(self, id):
         # Delete the record for the provided id.
